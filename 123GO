@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+cd /opt/proxy-manager-complete/deploy/docker
+
+echo "1) up"
+echo "2) down"
+read c
+
+case  in
+1) docker compose up -d ;;
+2) docker compose down ;;
+esac

@@ -1,0 +1,17 @@
+version: '3'
+services:
+  api:
+    image: python:3.11
+    volumes:
+      - ../../apps/api:/app
+    working_dir: /app
+    command: bash -c "pip install fastapi uvicorn && uvicorn main:app --host 0.0.0.0 --port 8080"
+    ports:
+      - "8080:8080"
+
+  bot:
+    image: python:3.11
+    volumes:
+      - ../../apps/bot:/app
+    working_dir: /app
+    command: bash -c "pip install aiogram && python main.py"
