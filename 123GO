@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
-cd /opt/proxy-manager-complete/deploy/docker
-
-echo "1) up"
-echo "2) down"
-read c
-
-case  in
-1) docker compose up -d ;;
-2) docker compose down ;;
-esac
+cd /opt/proxy-manager-complete || exit 1
+while true; do
+  clear
+  echo '===== 123GO ====='
+  echo '1. 服务状态'
+  echo '2. 用户列表'
+  echo '3. 节点健康'
+  echo '4. 告警列表'
+  echo '0. 退出'
+  read -r -p '请选择: ' c
+  case "$c" in
+    1) cd deploy/docker && docker compose ps ;;
+    2) curl -fsS -H "X-Admin-Token: $(grep '^APP_ADMIN_TOKEN=' .env | cut -d= -f2-)" "$(grep '^APP_BASE_URL=' .env | cut -d= -f2-)/admin/users" ;;
+    3) curl -fsS -H "X-Admin-Token: $(grep '^APP_ADMIN_TOKEN=' .env | cut -d= -f2-)" "$(grep '^APP_BASE_URL=' .env | cut -d= -f2-)/ops/health" ;;
+    4) curl -fsS -H "X-Admin-Token: $(grep '^APP_ADMIN_TOKEN=' .env | cut -d= -f2-)" "$(grep '^APP_BASE_URL=' .env | cut -d= -f2-)/alerts" ;;
+    0) exit 0 ;;
+  esac
+  echo
+  read -r -p '回车继续...' _
+done

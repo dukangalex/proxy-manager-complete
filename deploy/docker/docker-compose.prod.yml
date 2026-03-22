@@ -1,17 +1,23 @@
-version: '3'
+version: '3.9'
 services:
   api:
     image: python:3.11
-    volumes:
-      - ../../apps/api:/app
+    container_name: pm-api
     working_dir: /app
-    command: bash -c "pip install fastapi uvicorn && uvicorn main:app --host 0.0.0.0 --port 8080"
+    volumes:
+      - ../../:/app
+    command: bash -lc "pip install -r requirements-api.txt && uvicorn apps.api.app.main:app --host 0.0.0.0 --port 8080"
     ports:
-      - "8080:8080"
+      - '8080:8080'
+    restart: always
 
   bot:
     image: python:3.11
-    volumes:
-      - ../../apps/bot:/app
+    container_name: pm-bot
     working_dir: /app
-    command: bash -c "pip install aiogram && python main.py"
+    volumes:
+      - ../../:/app
+    command: bash -lc "pip install -r requirements-bot.txt && python -m apps.bot.main"
+    restart: always
+    depends_on:
+      - api
